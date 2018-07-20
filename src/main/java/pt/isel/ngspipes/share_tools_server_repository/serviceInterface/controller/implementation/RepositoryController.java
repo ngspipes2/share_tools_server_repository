@@ -83,6 +83,18 @@ public class RepositoryController implements IRepositoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Collection<ToolsRepository>> getToolsRepositoriesOfUser(String userName) throws Exception {
+        if(!isValidAccess(Access.Operation.GET, null))
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        Collection<ToolsRepository> repositories = repositoryService.getToolsRepositoriesOfUser(userName);
+
+        hidePasswords(repositories);
+
+        return new ResponseEntity<>(repositories, HttpStatus.OK);
+    }
+
 
     private boolean isValidAccess(Access.Operation operation, Integer repositoryId) throws ServiceException {
         User currentUser = currentUserSupplier.get();

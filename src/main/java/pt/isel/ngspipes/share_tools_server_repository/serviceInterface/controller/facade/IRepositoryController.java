@@ -26,4 +26,7 @@ public interface IRepositoryController {
     @RequestMapping(value = Routes.DELETE_TOOLS_REPOSITORY, method = RequestMethod.DELETE)
     ResponseEntity<Void> deleteRepository(@PathVariable int repositoryId) throws Exception;
 
+    @RequestMapping(value = Routes.GET_TOOLS_REPOSITORIES_OF_USER, method = RequestMethod.GET)
+    ResponseEntity<Collection<ToolsRepository>> getToolsRepositoriesOfUser(@PathVariable String userName) throws Exception;
+
 }
