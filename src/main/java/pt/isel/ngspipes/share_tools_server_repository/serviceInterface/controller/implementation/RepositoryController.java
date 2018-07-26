@@ -84,7 +84,7 @@ public class RepositoryController implements IRepositoryController {
     }
 
     @Override
-    public ResponseEntity<Collection<ToolsRepository>> getToolsRepositoriesOfUser(String userName) throws Exception {
+    public ResponseEntity<Collection<ToolsRepository>> getToolsRepositoriesOfUser(@PathVariable String userName) throws Exception {
         if(!isValidAccess(Access.Operation.GET, null))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
