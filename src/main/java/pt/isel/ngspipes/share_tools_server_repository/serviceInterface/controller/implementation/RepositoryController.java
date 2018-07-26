@@ -103,7 +103,7 @@ public class RepositoryController implements IRepositoryController {
         access.userName = currentUser == null ? null : currentUser.getUserName();
         access.operation = operation;
         access.entity = ToolsRepository.class;
-        access.entityId = Integer.toString(repositoryId);
+        access.entityId = repositoryId == null ? null : Integer.toString(repositoryId);
 
         return permissionService.isValid(access);
     }
