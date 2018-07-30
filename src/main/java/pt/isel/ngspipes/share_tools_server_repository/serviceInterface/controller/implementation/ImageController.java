@@ -52,7 +52,10 @@ public class ImageController implements IImageController {
         if(!isValidAccess(PermissionService.Access.Operation.UPDATE, repositoryId, ToolsRepository.class))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        imageService.insert(new Image("ToolsRepository"+repositoryId, IOUtils.toByteArray(file.getInputStream())));
+        if(imageService.getById("ToolsRepository"+repositoryId) == null)
+            imageService.insert(new Image("ToolsRepository"+repositoryId, IOUtils.toByteArray(file.getInputStream())));
+        else
+            imageService.update(new Image("ToolsRepository"+repositoryId, IOUtils.toByteArray(file.getInputStream())));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
