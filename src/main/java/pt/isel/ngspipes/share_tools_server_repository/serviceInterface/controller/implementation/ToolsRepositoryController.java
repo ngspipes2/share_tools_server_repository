@@ -6,46 +6,48 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pt.isel.ngspipes.share_core.logic.domain.Group;
-import pt.isel.ngspipes.share_core.logic.domain.ToolsRepository;
-import pt.isel.ngspipes.share_core.logic.domain.User;
-import pt.isel.ngspipes.share_core.logic.service.ICurrentUserSupplier;
-import pt.isel.ngspipes.share_core.logic.service.PermissionService;
-import pt.isel.ngspipes.share_core.logic.service.PermissionService.Access;
+import pt.isel.ngspipes.share_authentication_server.logic.domain.User;
+import pt.isel.ngspipes.share_authentication_server.logic.service.ICurrentUserSupplier;
+import pt.isel.ngspipes.share_authentication_server.logic.service.PermissionService.Access;
 import pt.isel.ngspipes.share_core.logic.service.exceptions.ServiceException;
-import pt.isel.ngspipes.share_core.logic.service.toolsRepository.ToolsRepositoryService;
-import pt.isel.ngspipes.share_tools_server_repository.serviceInterface.controller.facade.IRepositoryController;
+import pt.isel.ngspipes.share_tools_server_repository.logic.domain.ToolsRepositoryMetadata;
+import pt.isel.ngspipes.share_tools_server_repository.logic.service.PermissionService;
+import pt.isel.ngspipes.share_tools_server_repository.logic.service.repositoryMetadata.IToolsRepositoryMetadataService;
+import pt.isel.ngspipes.share_tools_server_repository.logic.service.repositoryService.IToolsRepositoryService;
+import pt.isel.ngspipes.share_tools_server_repository.serviceInterface.controller.facade.IToolsRepositoryController;
 
 import java.util.Collection;
 
 @RestController
-public class RepositoryController implements IRepositoryController {
+public class ToolsRepositoryController implements IToolsRepositoryController {
 
     @Autowired
     private PermissionService permissionService;
     @Autowired
     private ICurrentUserSupplier currentUserSupplier;
     @Autowired
-    private ToolsRepositoryService repositoryService;
+    private IToolsRepositoryMetadataService repositoryMetadataService;
+    @Autowired
+    private IToolsRepositoryService repositoryService;
 
 
 
-    public ResponseEntity<Collection<ToolsRepository>> getAllRepositories() throws Exception {
+    public ResponseEntity<Collection<ToolsRepositoryMetadata>> getAllRepositories() throws Exception {
         if(!isValidAccess(Access.Operation.GET, null))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        Collection<ToolsRepository> repositories = repositoryService.getAll();
+        Collection<ToolsRepositoryMetadata> repositories = repositoryMetadataService.getAll();
 
         hidePasswords(repositories);
 
         return new ResponseEntity<>(repositories, HttpStatus.OK);
     }
 
-    public ResponseEntity<ToolsRepository> getRepository(@PathVariable int repositoryId) throws Exception {
+    public ResponseEntity<ToolsRepositoryMetadata> getRepository(@PathVariable int repositoryId) throws Exception {
         if(!isValidAccess(Access.Operation.GET, repositoryId))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        ToolsRepository repository = repositoryService.getById(repositoryId);
+        ToolsRepositoryMetadata repository = repositoryMetadataService.getById(repositoryId);
 
         if(repository != null)
             hidePasswords(repository);
@@ -53,23 +55,23 @@ public class RepositoryController implements IRepositoryController {
         return new ResponseEntity<>(repository, HttpStatus.OK);
     }
 
-    public ResponseEntity<Integer> insertRepository(@RequestBody ToolsRepository repository) throws Exception {
+    public ResponseEntity<Integer> insertRepository(@RequestBody ToolsRepositoryMetadata repository) throws Exception {
         if(!isValidAccess(Access.Operation.INSERT, repository.getId()))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        repositoryService.insert(repository);
+        repositoryService.createRepository(repository);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(repository.getId(), HttpStatus.CREATED);
     }
 
-    public ResponseEntity<Void> updateRepository(@RequestBody ToolsRepository repository, @PathVariable int repositoryId) throws Exception {
+    public ResponseEntity<Void> updateRepository(@RequestBody ToolsRepositoryMetadata repository, @PathVariable int repositoryId) throws Exception {
         if(repository.getId() != repositoryId)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         if(!isValidAccess(Access.Operation.UPDATE, repositoryId))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        repositoryService.update(repository);
+        repositoryMetadataService.update(repository);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -78,17 +80,17 @@ public class RepositoryController implements IRepositoryController {
         if(!isValidAccess(Access.Operation.DELETE, repositoryId))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        repositoryService.delete(repositoryId);
+        repositoryService.deleteRepository(repositoryId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Collection<ToolsRepository>> getToolsRepositoriesOfUser(@PathVariable String userName) throws Exception {
+    public ResponseEntity<Collection<ToolsRepositoryMetadata>> getToolsRepositoriesOfUser(@PathVariable String userName) throws Exception {
         if(!isValidAccess(Access.Operation.GET, null))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        Collection<ToolsRepository> repositories = repositoryService.getToolsRepositoriesOfUser(userName);
+        Collection<ToolsRepositoryMetadata> repositories = repositoryMetadataService.getToolsRepositoriesOfUser(userName);
 
         hidePasswords(repositories);
 
@@ -102,26 +104,19 @@ public class RepositoryController implements IRepositoryController {
         Access access = new Access();
         access.userName = currentUser == null ? null : currentUser.getUserName();
         access.operation = operation;
-        access.entity = ToolsRepository.class;
+        access.entity = ToolsRepositoryMetadata.class;
         access.entityId = repositoryId == null ? null : Integer.toString(repositoryId);
 
         return permissionService.isValid(access);
     }
 
-    private void hidePasswords(Collection<ToolsRepository> repositories) {
-        for(ToolsRepository repository : repositories)
+    private void hidePasswords(Collection<ToolsRepositoryMetadata> repositories) {
+        for(ToolsRepositoryMetadata repository : repositories)
             hidePasswords(repository);
     }
 
-    private void hidePasswords(ToolsRepository repository) {
+    private void hidePasswords(ToolsRepositoryMetadata repository) {
         repository.getOwner().setPassword("");
-
-        for(User user : repository.getUsersAccess())
-            user.setPassword("");
-
-        for(Group group : repository.getGroupsAccess())
-            for(User member : group.getMembers())
-                member.setPassword("");
     }
 
 }
