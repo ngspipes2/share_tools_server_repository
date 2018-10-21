@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import pt.isel.ngspipes.share_authentication_server.logic.domain.User;
 import pt.isel.ngspipes.share_tools_server_repository.serviceInterface.config.Routes;
 
 import javax.sql.DataSource;
@@ -35,35 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .authorizeRequests()
-
             .antMatchers(HttpMethod.OPTIONS).permitAll()
-
-            .antMatchers(HttpMethod.GET, Routes.GET_ALL_TOOLS_REPOSITORIES).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_TOOLS_REPOSITORY).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(HttpMethod.POST, Routes.INSERT_TOOLS_REPOSITORY).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.UPDATE_TOOLS_REPOSITORY).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.DELETE_TOOLS_REPOSITORY).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_TOOLS_REPOSITORIES_OF_USER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-
-            .antMatchers(HttpMethod.GET, Routes.GET_ALL_USER_MEMBERS).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_USER_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(HttpMethod.POST, Routes.INSERT_USER_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.UPDATE_USER_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.DELETE_USER_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_USER_MEMBERS_WITH_USER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_USER_MEMBERS_OF_REPOSITORY).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-
-            .antMatchers(HttpMethod.GET, Routes.GET_ALL_GROUP_MEMBERS).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_GROUP_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(HttpMethod.POST, Routes.INSERT_GROUP_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.UPDATE_GROUP_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.DELETE_GROUP_MEMBER).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_GROUP_MEMBERS_WITH_GROUP).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(Routes.GET_GROUP_MEMBERS_OF_REPOSITORY).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-
-            .antMatchers(HttpMethod.GET, Routes.GET_TOOLS_REPOSITORY_IMAGE).permitAll()
-            .antMatchers(HttpMethod.POST, Routes.UPDATE_TOOLS_REPOSITORY_IMAGE).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
-            .antMatchers(HttpMethod.DELETE, Routes.DELETE_TOOLS_REPOSITORY_IMAGE).hasAnyRole(User.Role.NORMAL.toString(), User.Role.ADMIN.toString())
 
             .antMatchers(Routes.TOOLS_REPOSITORY_SERVER_URI).permitAll()
 
