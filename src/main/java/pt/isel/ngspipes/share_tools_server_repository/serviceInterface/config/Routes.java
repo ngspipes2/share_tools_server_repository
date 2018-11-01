@@ -2,7 +2,7 @@ package pt.isel.ngspipes.share_tools_server_repository.serviceInterface.config;
 
 public class Routes {
 
-    public static final String TOOLS_REPOSITORY_SERVER_URI = "/server/{repositoryId}";
+    public static final String TOOLS_REPOSITORY_SERVER_URI = "/server/{repositoryName}";
 
     public static final String GET_LOGO_URI = TOOLS_REPOSITORY_SERVER_URI + "/logo";
     public static final String SET_LOGO_URI = TOOLS_REPOSITORY_SERVER_URI + "/logo";

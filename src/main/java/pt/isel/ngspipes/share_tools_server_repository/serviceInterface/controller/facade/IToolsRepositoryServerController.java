@@ -12,24 +12,24 @@ import java.util.Collection;
 public interface IToolsRepositoryServerController {
 
     @RequestMapping(value = Routes.GET_LOGO_URI, method = RequestMethod.GET)
-    ResponseEntity<byte[]> getLogo(@PathVariable int repositoryId, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
+    ResponseEntity<byte[]> getLogo(@PathVariable String repositoryName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
 
     @RequestMapping(value = Routes.SET_LOGO_URI, method = RequestMethod.POST)
-    ResponseEntity<Void> setLogo(@PathVariable int repositoryId, @RequestHeader(value = "Authorization", required = false) String authHeader, @RequestBody(required = false) byte[] logo) throws Exception;
+    ResponseEntity<Void> setLogo(@PathVariable String repositoryName, @RequestHeader(value = "Authorization", required = false) String authHeader, @RequestBody(required = false) byte[] logo) throws Exception;
 
     @RequestMapping(value = Routes.GET_ALL_TOOLS_URI, method = RequestMethod.GET)
-    ResponseEntity<Collection<IToolDescriptor>> getAll(@PathVariable int repositoryId, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
+    ResponseEntity<Collection<IToolDescriptor>> getAll(@PathVariable String repositoryName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
 
     @RequestMapping(value = Routes.GET_TOOL_URI, method = RequestMethod.GET)
-    ResponseEntity<IToolDescriptor> get(@PathVariable int repositoryId, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
+    ResponseEntity<IToolDescriptor> get(@PathVariable String repositoryName, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
 
     @RequestMapping(value = Routes.INSERT_TOOL_URI, method = RequestMethod.POST)
-    ResponseEntity<Void> insert(@PathVariable int repositoryId, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
+    ResponseEntity<Void> insert(@PathVariable String repositoryName, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
 
     @RequestMapping(value = Routes.UPDATE_TOOL_URI, method = RequestMethod.PUT)
-    ResponseEntity<Void> update(@PathVariable int repositoryId, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
+    ResponseEntity<Void> update(@PathVariable String repositoryName, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
 
     @RequestMapping(value = Routes.DELETE_TOOL_URI, method = RequestMethod.DELETE)
-    ResponseEntity<Void> delete(@PathVariable int repositoryId, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
+    ResponseEntity<Void> delete(@PathVariable String repositoryName, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception;
 
 }

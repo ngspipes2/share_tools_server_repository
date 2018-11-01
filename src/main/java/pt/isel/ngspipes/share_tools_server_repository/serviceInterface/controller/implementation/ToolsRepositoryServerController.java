@@ -42,97 +42,97 @@ public class ToolsRepositoryServerController implements IToolsRepositoryServerCo
 
 
     @Override
-    public ResponseEntity<byte[]> getLogo(@PathVariable int repositoryId, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.GET))
+    public ResponseEntity<byte[]> getLogo(@PathVariable String repositoryName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.GET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
 
         return new ResponseEntity<>(repository.getLogo(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> setLogo(@PathVariable int repositoryId, @RequestHeader(value = "Authorization", required = false) String authHeader, @RequestBody(required = false) byte[] logo) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.UPDATE))
+    public ResponseEntity<Void> setLogo(@PathVariable String repositoryName, @RequestHeader(value = "Authorization", required = false) String authHeader, @RequestBody(required = false) byte[] logo) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.UPDATE))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
         repository.setLogo(logo);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Collection<IToolDescriptor>> getAll(@PathVariable int repositoryId, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.GET))
+    public ResponseEntity<Collection<IToolDescriptor>> getAll(@PathVariable String repositoryName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.GET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
 
         return new ResponseEntity<>(repository.getAll(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<IToolDescriptor> get(@PathVariable int repositoryId, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.GET))
+    public ResponseEntity<IToolDescriptor> get(@PathVariable String repositoryName, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.GET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
 
         return new ResponseEntity<>(repository.get(toolName), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> insert(@PathVariable int repositoryId, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.INSERT))
+    public ResponseEntity<Void> insert(@PathVariable String repositoryName, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.INSERT))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
         repository.insert(tool);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> update(@PathVariable int repositoryId, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.UPDATE))
+    public ResponseEntity<Void> update(@PathVariable String repositoryName, @RequestBody IToolDescriptor tool, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.UPDATE))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
         repository.update(tool);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> delete(@PathVariable int repositoryId, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
-        if(!validAccess(repositoryId, authHeader, Access.Operation.DELETE))
+    public ResponseEntity<Void> delete(@PathVariable String repositoryName, @PathVariable String toolName, @RequestHeader(value = "Authorization", required = false) String authHeader) throws Exception {
+        if(!validAccess(repositoryName, authHeader, Access.Operation.DELETE))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        IToolsRepository repository = getRepository(repositoryId);
+        IToolsRepository repository = getRepository(repositoryName);
         repository.delete(toolName);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    private boolean validAccess(int repositoryId, String authHeader, Access.Operation operations) throws Exception {
+    private boolean validAccess(String repositoryName, String authHeader, Access.Operation operations) throws Exception {
         AccessToken token = getToken(authHeader);
         User user = token == null ? getUser(authHeader) : token.getOwner();
 
-        return permissionService.hasPermission(repositoryId, user, token, operations);
+        return permissionService.hasPermission(repositoryName, user, token, operations);
     }
 
-    private IToolsRepository getRepository(int repositoryId) throws ServiceException {
-        RepositoryMetadata repositoryMetadata = repositoryMetadataService.getById(repositoryId);
+    private IToolsRepository getRepository(String repositoryName) throws ServiceException {
+        RepositoryMetadata repositoryMetadata = repositoryMetadataService.getById(repositoryName);
 
         if(repositoryMetadata == null)
-            throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryId);
+            throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryName);
 
         IToolsRepository repository = repositoryService.getToolsRepository(repositoryMetadata);
 
         if(repository == null)
-            throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryId);
+            throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryName);
 
         return repository;
     }
