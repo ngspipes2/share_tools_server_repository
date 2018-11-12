@@ -124,12 +124,12 @@ public class ToolsRepositoryServerController implements IToolsRepositoryServerCo
     }
 
     private IToolsRepository getRepository(String repositoryName) throws ServiceException {
-        RepositoryInfo repositoryMetadata = repositoryInfoService.getById(repositoryName);
+        RepositoryInfo repositoryInfo = repositoryInfoService.getById(repositoryName);
 
-        if(repositoryMetadata == null)
+        if(repositoryInfo == null)
             throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryName);
 
-        IToolsRepository repository = repositoryService.getToolsRepository(repositoryMetadata);
+        IToolsRepository repository = repositoryService.getToolsRepository(repositoryInfo);
 
         if(repository == null)
             throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryName);
