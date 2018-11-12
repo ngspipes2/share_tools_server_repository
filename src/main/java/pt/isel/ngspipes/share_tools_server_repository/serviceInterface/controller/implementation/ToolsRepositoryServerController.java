@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import pt.isel.ngspipes.share_core.logic.domain.AccessToken;
+import pt.isel.ngspipes.share_core.logic.domain.RepositoryInfo;
 import pt.isel.ngspipes.share_core.logic.domain.User;
 import pt.isel.ngspipes.share_core.logic.service.accessToken.IAccessTokenService;
 import pt.isel.ngspipes.share_core.logic.service.exceptions.NonExistentEntityException;
 import pt.isel.ngspipes.share_core.logic.service.exceptions.ServiceException;
 import pt.isel.ngspipes.share_core.logic.service.permission.Access;
+import pt.isel.ngspipes.share_core.logic.service.permission.IRepositoryPermissionService;
+import pt.isel.ngspipes.share_core.logic.service.repositoryInfo.IRepositoryInfoService;
+import pt.isel.ngspipes.share_core.logic.service.repositoryInfo.IRepositoryService;
 import pt.isel.ngspipes.share_core.logic.service.user.IUserService;
-import pt.isel.ngspipes.share_dynamic_repository.logic.domain.RepositoryMetadata;
-import pt.isel.ngspipes.share_dynamic_repository.logic.service.permission.IRepositoryPermissionService;
-import pt.isel.ngspipes.share_dynamic_repository.logic.service.repositoryMetadata.IRepositoryMetadataService;
-import pt.isel.ngspipes.share_dynamic_repository.logic.service.repositoryMetadata.IRepositoryService;
 import pt.isel.ngspipes.share_tools_server_repository.serviceInterface.controller.facade.IToolsRepositoryServerController;
 import pt.isel.ngspipes.tool_descriptor.interfaces.IToolDescriptor;
 import pt.isel.ngspipes.tool_repository.interfaces.IToolsRepository;
@@ -35,7 +35,7 @@ public class ToolsRepositoryServerController implements IToolsRepositoryServerCo
     @Autowired
     private IRepositoryService repositoryService;
     @Autowired
-    private IRepositoryMetadataService repositoryMetadataService;
+    private IRepositoryInfoService repositoryInfoService;
     @Autowired
     private IRepositoryPermissionService permissionService;
 
@@ -124,7 +124,7 @@ public class ToolsRepositoryServerController implements IToolsRepositoryServerCo
     }
 
     private IToolsRepository getRepository(String repositoryName) throws ServiceException {
-        RepositoryMetadata repositoryMetadata = repositoryMetadataService.getById(repositoryName);
+        RepositoryInfo repositoryMetadata = repositoryInfoService.getById(repositoryName);
 
         if(repositoryMetadata == null)
             throw new NonExistentEntityException("There is no ToolsRepository with with:" + repositoryName);
