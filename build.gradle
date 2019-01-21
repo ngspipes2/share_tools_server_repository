@@ -1,5 +1,5 @@
 group 'pt.isel.ngspipes'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 apply plugin: 'java'
 
@@ -43,4 +43,6 @@ jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
+
+    baseName 'ToolsServer'
 }
